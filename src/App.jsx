@@ -5,7 +5,7 @@ import Homepage from './pages/Homepage'
 import SignupAd from './pages/signUp/SignupAd'
 import SignupPa from './pages/signUp/SignupPa'
 import SignupVu from './pages/signUp/SignupVu'
-import Navbar from './components/Navbar'
+import ApplicationNavbar from './components/ApplicationNavbar'
 
 import { useContext, useState, useEffect } from 'react';
 import { authContext } from './context/AuthContext'
@@ -25,6 +25,7 @@ function App() {
   const navigate = useNavigate();
   const [teachs, setTeachs] = useState([]);
   const [classes, setClasses] = useState([]);
+  const [reservations, setReservations] = useState([]);
 
 
 
@@ -71,13 +72,20 @@ const handleAddClass = async (teachId, classFormData) => {
   navigate(`/teachs`);
 }
 
+const handelReservations = async(user, teachId, reservationData) => {
+  const newReservation = await teachService.createReservations(user,teachId,reservationData);
+  setReservations([newReservation, ...reservations])
+  navigate('/')
+
+}
+
 
 
   return (
     <>
-      <Navbar/>
+      <ApplicationNavbar/>
       <Routes>
-        <Route path='/' element={<Homepage/>}/>
+        <Route path='/' element={<Homepage teachs={teachs} user={user} handelReservations={handelReservations}/>}/>
        
        {user ? (
           <>

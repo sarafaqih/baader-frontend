@@ -90,6 +90,25 @@ const index = async () => {
     }
   };
 
+    const createReservations = async (user, teachId, reservationData) => {
+    try {
+      const res = await fetch(`${BASE_URL}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reservationData),
+      });
+      return res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+ 
+
+
  
 
 
@@ -99,5 +118,6 @@ const index = async () => {
     create,
     deleteTeach,
     update,
-    createClass
+    createClass,
+    createReservations
   };

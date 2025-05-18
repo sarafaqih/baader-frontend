@@ -3,6 +3,12 @@ import { useParams } from 'react-router';
 import * as teachService from '../../services/teachService'; 
 import TeachForm from '../TeachList/TeachForm'
 
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Row';
+import InputGroup from 'react-bootstrap/InputGroup';
+
 
 function ClassForm(props) {
   const { teachId } = useParams();
@@ -40,17 +46,17 @@ function ClassForm(props) {
 
         setFormData((prev) => ({
           ...prev,
-          teacher: teachData.volunteer.firstName || '',
+          teacher: teachData.volunteer.firstName + ' ' + teachData.volunteer.lastName|| '',
           subject: teachData.subject || '',
           days: teachData.preferredDays || [],
           venue: teachData.venue || '',
           numberOfStudents: teachData.numberOfStudents || '',
-          classMode: teachData.classMode || '',
+          classMode: teachData.preferredMode || '',
           ageStart: ageMatch ? ageMatch[1] : '',
           ageEnd: ageMatch ? ageMatch[2] : '',
-          startTime: timeMatch ? timeMatch[1] : '',
+          startTime: teachData.startTime,
           startTimePeriod: timeMatch ? timeMatch[2].toLowerCase() : 'am',
-          endTime: timeMatch ? timeMatch[3] : '',
+          endTime: teachData.endTime,
           endTimePeriod: timeMatch ? timeMatch[4].toLowerCase() : 'pm',
         }));
       } catch (err) {
@@ -71,7 +77,9 @@ function ClassForm(props) {
       subject: formData.subject,
       days: formData.days,
       time: formattedTime,
-      classMode: formData.classMode,
+      startTime: formData.startTime,
+      endTime: formData.endTime,
+      classMode: formData.preferredMode,
       venue: formData.venue,
       numberOfStudents: formData.numberOfStudents,
       ageOFStudents: formattedAge,
@@ -82,205 +90,240 @@ function ClassForm(props) {
 
   const [approvementStatus, setApprovementStatus] = useState('');
 
+    const handleApprovement = async (status) => {
+      try {
+        await teachService.update(teachId, { approvement: status });
+        setApprovementStatus(status);
+      } catch (err) {
+        console.error('Error updating approvement:', err);
+      }
+    }
+  
+
 
   return (
-    <div>
-        <h1>Class Form</h1>
+    <div style={{ paddingTop: '70px' }}>
+        <h1>Volunteer Request</h1>
 
-        {<TeachForm handleUpdateTeach={props.handleUpdateTeach}/>}
+        {/* {<TeachForm handleUpdateTeach={props.handleUpdateTeach}/>} */}
 
-      
-      <form onSubmit={handleSubmit}>
+      {approvementStatus === 'Rejected' ? (
+      <div>
+        <p style={{ color: 'red', fontWeight: 'bold' }}>
+          This post has been rejected.
+        </p>
+        <Button variant='dark' type='submit' disabled>Create New Class</Button>
+      </div>
+    ) : (
+       <div></div>
+    )}
 
+    {approvementStatus === 'Approved' && (
+      <div>
+        <p style={{ color: 'green', fontWeight: 'bold' }}>
+          This post has been approved.
+        </p>
+        <Button variant='dark' type='submit'>Create New Class</Button>
 
-        <label htmlFor='teacher'>Teacher: </label>
-        <input
-          required
-          type='text'
-          name='teacher'
-          id='teacher'
-          value={formData.teacher}
-          onChange={handleChange}
-        />
-
-
-
-<br />
-<br />
-
-
-
-        <label htmlFor='subject'>Subject: </label>
-        <input
-          required
-          type='text'
-          name='subject'
-          id='subject'
-          value={formData.subject}
-          onChange={handleChange}
-        />
+      </div>
+      )}
 
 
+    {location.pathname === `/teachs/${teachId}/class` && (
+      <>
 
-<br />
-<br />
-
-        <label htmlFor='classMode'>Class Mode: </label>
-        <select
-          required
-          name='classMode'
-          id='classMode'
-          value={formData.classMode}
-          onChange={handleChange}
+{approvementStatus === 'Rejected' || approvementStatus === 'Approved'  ? (
+  <div></div>
+) : (
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <button
+          type="button"
+          onClick={() => handleApprovement('Approved')}
+          style={{
+            backgroundColor: approvementStatus === 'Approved' ? 'green' : '#ccc',
+            color: '#fff',
+            padding: '10px',
+            border: 'none',
+            cursor: 'pointer'
+          }}
         >
-          <option value='online'>Online</option>
-          <option value='in-person'>In person</option>
-          <option value='hybrid'>Hybrid</option>
-        </select>
-<br />
-<br />
+          Approve
+        </button>
+  
+        <button
+          type="button"
+          onClick={() => handleApprovement('Rejected')}
+          style={{
+            backgroundColor: approvementStatus === 'Rejected' ? 'red' : '#ccc',
+            color: '#fff',
+            padding: '10px',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          Reject
+        </button>
+      </div>
+)}
+</>
+)}
 
 
-{/* <label htmlFor='time'>time: </label>
-        <input
-          required
-          type='text'
-          name='time'
-          id='time'
-          value={formData.time}
-          onChange={handleChange}
-        />
-<br />
-<br /> */}
 
+      <Form onSubmit={handleSubmit}>
 
-        <label htmlFor='venue'>Venue: </label>
-        <input
-          required
-          type='text'
-          name='venue'
-          id='venue'
+        {/*Teacher */}
+
+          <Form.Group as={Row} className="mb-3 align-items-center">
+          <Form.Label column sm={2} className="text-start" /*style={{ marginLeft: '-45px' }}*/>Teacher</Form.Label>
+          <Col sm={6}>
+            <Form.Control
+              type="text"
+              name="teacher"
+              id="teacher"
+              value={formData.teacher}
+              onChange={handleChange}
+              required
+              disabled
+            />
+          </Col>
+        </Form.Group>
+
+        {/*Subject */}
+
+          <Form.Group as={Row} className="mb-3 align-items-center">
+          <Form.Label column sm={2} className="text-start" /*style={{ marginLeft: '-45px' }}*/>Subject</Form.Label>
+          <Col sm={6}>
+            <Form.Control
+              type="text"
+              name="subject"
+              id="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              required
+              disabled
+            />
+          </Col>
+        </Form.Group>
+
+            {/* ClassMode */}
+            <Form.Group as={Row} className="mb-3 align-items-center">
+              <Form.Label column lg={4} className="text-start">Class Mode</Form.Label>
+              <Col sm={6}>
+                <Form.Select
+                  aria-label="classMode"
+                  name="classMode"
+                  id="classMode"
+                  value={formData.classMode}
+                  onChange={handleChange}
+                  required
+                  disabled
+                >
+                  <option value='online'>Online</option>
+                  <option value='in-person'>In person</option>
+                  <option value='hybrid'>Hybrid</option>
+                </Form.Select>
+              </Col>
+            </Form.Group>
+
+                {/*Teaching Time Period */}
+                <InputGroup className="mb-3">
+                 <InputGroup.Text>Teaching Time Period</InputGroup.Text>
+                    <Form.Control
+                      type="time"
+                      name="startTime"
+                      id="startTime"
+                      value={formData.startTime}
+                      onChange={handleChange}
+                      required
+                      disabled
+                    />
+                   <Form.Control
+                      type="time"
+                      name="endTime"
+                      id="endTime"
+                      value={formData.endTime}
+                      onChange={handleChange}
+                      required
+                      disabled
+                    />
+                </InputGroup>
+
+      <Form.Group as={Row} className="mb-3 align-items-center">
+      <Form.Label column sm={2} className="text-start" /*style={{ marginLeft: '-45px' }}*/>Venue</Form.Label>
+      <Col sm={6}>
+        <Form.Control
+          type="text"
+          name="venue"
+          id="venue"
           value={formData.venue}
           onChange={handleChange}
-        />
-<br />
-<br />
-
-<label htmlFor='numberOfStudents'>Number Of Students: </label>
-        <input
           required
-          type='number'
-          name='numberOfStudents'
-          id='numberOfStudents'
-          min={1}
-          value={formData.numberOfStudents}
-          onChange={handleChange}
+          disabled
         />
+      </Col>
+    </Form.Group>
 
-<br />
-<br />
+            {/* Number of Students */}
+        <Form.Group as={Row} className="mb-3 align-items-center">
+          <Form.Label column lg={4} className="text-start" /*style={{ marginLeft: '-45px' }}*/>Number Of Students</Form.Label>
+          <Col sm={6}>
+            <Form.Control
+              type="number"
+              name="numberOfStudents"
+              id="numberOfStudents"
+              value={formData.numberOfStudents}
+              min={1}
+              onChange={handleChange}
+              required
+              disabled
+            />
+          </Col>
+        </Form.Group>
 
+              {/*age range */}
+            <InputGroup className="mb-3">
+              <InputGroup.Text>Students Age Range</InputGroup.Text>
+              <Form.Control aria-label="from" 
+                required
+                type="number"
+                name="ageStart"
+                placeholder="From"
+                min={1}
+                value={formData.ageStart}
+                onChange={handleChange} 
+                disabled
+                />
+              <Form.Control aria-label="to" 
+                required
+                type="number"
+                name="ageEnd"
+                placeholder="To"
+                min={1}
+                value={formData.ageEnd}
+                onChange={handleChange} 
+                disabled
+                />
+            </InputGroup>
 
-        <label>Age of Students: </label>
-        <input
-        required
-        type="number"
-        name="ageStart"
-        placeholder="From"
-        min={1}
-        value={formData.ageStart}
-        onChange={handleChange}
-        />    
-            – 
-        <input
-        required
-        type="number"
-        name="ageEnd"
-        placeholder="To"
-        min={1}
-        value={formData.ageEnd}
-        onChange={handleChange}
-        /> years
-
-
-<br />
-<br />
-
-
-        {/* <label htmlFor='time'>Time: </label>
-        <input
-          required
-          type='text'
-          name='time'
-          id='time'
-          value={formData.time}
-          onChange={handleChange}
-        /> */}
-
-<label>Start Time: </label>
-<input
-  type="time"
-  name="startTime"
-  required
-  value={formData.startTime}
-  onChange={handleChange}
-/>
-
-<select
-  name="startTimePeriod"
-  value={formData.startTimePeriod || 'am'}
-  onChange={(e) =>
-    setFormData({ ...formData, startTimePeriod: e.target.value })
-  }
->
-  <option value="am">AM</option>
-  <option value="pm">PM</option>
-</select>
-
-<br /><br />
-
-<label>End Time: </label>
-<input
-  type="time"
-  name="endTime"
-  required
-  value={formData.endTime}
-  onChange={handleChange}
-/>
-
-<select
-  name="endTimePeriod"
-  value={formData.endTimePeriod || 'pm'}
-  onChange={(e) =>
-    setFormData({ ...formData, endTimePeriod: e.target.value })
-  }
->
-  <option value="am">AM</option>
-  <option value="pm">PM</option>
-</select>
-
-
-
-
-
-<br />
-<br />
-
-<label>Days:</label><br />
-<div>
-  {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-    <label key={day}>
-      <input
-        type="checkbox"
-        name="days"
-        
+    <Form.Group as={Row} className="mb-3 align-items-center" controlId="preferredDays">
+    <Form.Label column sm={2} className="text-start">Preferred Days</Form.Label>
+    {/* <Col sm={6}><Form.Control as="textarea" rows={3} name='notes' id='notes' value={formData.notes} onChange={handleChange} required/></Col> */}
+    <div></div>
+    <>
+    {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => (
+    <label key={day} style={{display: "contents"}}>
+      <Form.Check
+        inline
         value={day}
+        name="days"
+        type="checkbox"
         checked={formData.days.includes(day)}
         onChange={(e) => {
           const { checked, value } = e.target;
           setFormData((prevData) => ({
             ...prevData,
-            days: checked
+            preferredDays: checked
               ? [...prevData.days, value]
               : prevData.days.filter((d) => d !== value)
           }));
@@ -288,27 +331,13 @@ function ClassForm(props) {
       />
       {day}
     </label>
-  ))}
-</div>
+      ))}
+      </>
+  </Form.Group>
 
-<br />
-<br />
+ </Form>
+      
 
-
-{approvementStatus === 'Rejected' ? (
-  <div>
-    <p style={{ color: 'red', fontWeight: 'bold' }}>
-      This post has been rejected. Class creation is disabled.
-    </p>
-    <button type='submit' disabled>Create New Class</button>
-  </div>
-) : (
-  <button type='submit'>Create New Class</button>
-)}
-
-
-
-      </form>
  
     </div>
   )
