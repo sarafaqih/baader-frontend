@@ -5,7 +5,7 @@ import Table from 'react-bootstrap/Table';
 import { Button } from 'react-bootstrap';
 
 function TeachList({teachs, user, handleDeleteTeach}) {
-
+ 
     let count = 1
     return (
 <div style={{ paddingTop: '70px' }}>
@@ -36,7 +36,7 @@ function TeachList({teachs, user, handleDeleteTeach}) {
   <tbody>
     {teachs.map((teach) => (
     <tr key={teach._id}>
-      <td>{count++}</td>
+      <td><Link to={`${teach._id}/class`} style={{color:"black"}}>{count++}</Link></td>
       <td>{teach.subject}</td>
       <td>{teach.preferredDays.map((day)=> <p>{day}</p> )}</td>
       <td>{teach.time} </td>

@@ -90,6 +90,45 @@ const index = async () => {
     }
   };
 
+  const getAllClasses = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/classes`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      return res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+    async function updateClass(classId, classFormData) {
+    try {
+      const res = await fetch(`${BASE_URL}/classes/${classId}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(classFormData),
+      });
+      return res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getAllChildren = async (userId) => {
+    try {
+      const res = await fetch(`${BASE_URL}/users/${userId}/children`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      return res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
     const createReservations = async (user, teachId, reservationData) => {
     try {
       const res = await fetch(`${BASE_URL}`, {
@@ -119,5 +158,8 @@ const index = async () => {
     deleteTeach,
     update,
     createClass,
-    createReservations
+    getAllClasses,
+    updateClass,
+    createReservations,
+    getAllChildren
   };

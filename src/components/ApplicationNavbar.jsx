@@ -55,6 +55,7 @@ const ApplicationNavbar = () => {
               <Navbar.Text className="ms-3">Welcome {user.firstName} {user.lastName}</Navbar.Text>
                {(user.role === "admin" || user.role === "volunteer") && ( <Nav.Link href="/teachs" className="ms-3">Volunteer Requests</Nav.Link> )}
                {user.role === "volunteer" && (<Nav.Link href='/teach/new' className="ms-3">Volunteer To Teach</Nav.Link>)}
+               {(user.role === "parent" || user.role === "volunteer")&& (<Nav.Link href='/teach/classes' className="ms-3">Reservations</Nav.Link>)}
               <Button variant="dark" className="ms-3" onClick={logout}>Logout</Button>
             </div>
             </>

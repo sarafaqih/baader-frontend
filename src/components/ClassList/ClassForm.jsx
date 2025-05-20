@@ -46,12 +46,12 @@ function ClassForm(props) {
 
         setFormData((prev) => ({
           ...prev,
-          teacher: teachData.volunteer.firstName + ' ' + teachData.volunteer.lastName|| '',
+          teacher: teachData.volunteer,
           subject: teachData.subject || '',
           days: teachData.preferredDays || [],
           venue: teachData.venue || '',
           numberOfStudents: teachData.numberOfStudents || '',
-          classMode: teachData.preferredMode || '',
+          preferredMode: teachData.preferredMode || '',
           ageStart: ageMatch ? ageMatch[1] : '',
           ageEnd: ageMatch ? ageMatch[2] : '',
           startTime: teachData.startTime,
@@ -107,7 +107,9 @@ function ClassForm(props) {
 
         {/* {<TeachForm handleUpdateTeach={props.handleUpdateTeach}/>} */}
 
-      {approvementStatus === 'Rejected' ? (
+      <Form onSubmit={handleSubmit}>
+
+              {approvementStatus === 'Rejected' ? (
       <div>
         <p style={{ color: 'red', fontWeight: 'bold' }}>
           This post has been rejected.
@@ -124,6 +126,20 @@ function ClassForm(props) {
           This post has been approved.
         </p>
         <Button variant='dark' type='submit'>Create New Class</Button>
+{/* 
+                <button
+          type="button"
+          onClick={() => props.handleAddClass(teachId, finalData)}
+          style={{
+            color: 'black',
+            padding: '10px',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          Create New Class
+        </button> */}
+
 
       </div>
       )}
@@ -169,9 +185,6 @@ function ClassForm(props) {
 )}
 
 
-
-      <Form onSubmit={handleSubmit}>
-
         {/*Teacher */}
 
           <Form.Group as={Row} className="mb-3 align-items-center">
@@ -181,7 +194,7 @@ function ClassForm(props) {
               type="text"
               name="teacher"
               id="teacher"
-              value={formData.teacher}
+              value={formData.teacher.firstName + ' ' + formData.teacher.lastName}
               onChange={handleChange}
               required
               disabled
