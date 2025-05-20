@@ -2,7 +2,10 @@ import {useState, useContext} from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
 import { authContext } from '../context/AuthContext'
-
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Row';
 
 function Login() {
       const [formData, setFormData] = useState({
@@ -33,31 +36,44 @@ function Login() {
 
 
   return (
-    <div>
+    <div style={{ paddingTop: '70px' }}>
       <h1>Login</h1>
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">Username:</label>
-        <input
-         type="text"
-         name='username'
-         id='username'
-         value={formData.username}
-         onChange={handleChange}
-          />
+<Form onSubmit={handleSubmit}>
+  <Form.Group as={Row} className="mb-3">
+    <Form.Label htmlFor="username" column sm="2">Username</Form.Label>
+    <Col sm="10">
+      <Form.Control
+        type="text"
+        name="username"
+        id="username"
+        value={formData.username}
+        onChange={handleChange}
+      />
+    </Col>
+  </Form.Group>
 
-        <label htmlFor="password">Password:</label>
-        <input
-         type="password"
-         name='password'
-         id='password'
-         value={formData.password}
-         onChange={handleChange}
-          />
+  <Form.Group as={Row} className="mb-3">
+    <Form.Label htmlFor="password" column sm="2">Password</Form.Label>
+    <Col sm="10">
+      <Form.Control
+        type="password"
+        name="password"
+        id="password"
+        value={formData.password}
+        onChange={handleChange}
+      />
+    </Col>
+  </Form.Group>
 
-          <button>Submit</button>
-      </form>
-    </div>
+  <Form.Group as={Row} className="mb-3">
+    <Col sm={{ span: 10, offset: 2 }}>
+      <Button variant="dark" type="submit" className="w-100">Login</Button>
+    </Col>
+  </Form.Group>
+</Form>
+
+  </div>
   )
 }
 

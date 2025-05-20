@@ -1,6 +1,11 @@
 import {useState} from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Row';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 function Signup() {
 
@@ -34,120 +39,132 @@ function Signup() {
         }
     }
   return (
-    <div>
+    <div style={{ paddingTop: '70px' }}>
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">Username:</label>
-        <input
-         type="text"
-         name='username'
-         id='username'
-         value={formData.username}
-         onChange={handleChange}
-          />
+      <h1>Singup as Volunteer</h1>
 
-<br/>
-<br/>
+<Form onSubmit={handleSubmit} style={{ paddingTop: '70px' }}>
+  {/* Username */}
+  <Form.Group as={Row} className="mb-3 align-items-center">
+    <Form.Label column sm={2} className="text-end">Username</Form.Label>
+    <Col sm={6}>
+      <Form.Control
+        type="text"
+        name="username"
+        id="username"
+        value={formData.username}
+        onChange={handleChange}
+      />
+    </Col>
+  </Form.Group>
 
-        <label htmlFor="password">Password:</label>
-        <input
-         type="password"
-         name='password'
-         id='password'
-         value={formData.password}
-         onChange={handleChange}
-          />
-<br/>
-<br/>
+  {/* Password */}
+  <Form.Group as={Row} className="mb-3 align-items-center">
+    <Form.Label column sm={2} className="text-end">Password</Form.Label>
+    <Col sm={6}>
+      <Form.Control
+        type="password"
+        name="password"
+        id="password"
+        value={formData.password}
+        onChange={handleChange}
+      />
+    </Col>
+  </Form.Group>
 
+  {/* First Name */}
+  <Form.Group as={Row} className="mb-3 align-items-center">
+    <Form.Label column sm={4} className="text-end" style={{ marginLeft: '-30px' }}>First Name</Form.Label>
+    <Col sm={6}>
+      <Form.Control
+        type="text"
+        name="firstName"
+        id="firstName"
+        value={formData.firstName}
+        onChange={handleChange}
+        required
+      />
+    </Col>
+  </Form.Group>
 
-<label htmlFor="firstName">First Name: </label>
-        <input
-         type="text"
-         name='firstName'
-         id='firstName'
-         required
-         value={formData.firstName}
-         onChange={handleChange}
-          />
+  {/* Last Name */}
+  <Form.Group as={Row} className="mb-3 align-items-center">
+    <Form.Label column sm={4} className="text-end" style={{ marginLeft: '-30px' }}>Last Name</Form.Label>
+    <Col sm={6}>
+      <Form.Control
+        type="text"
+        name="lastName"
+        id="lastName"
+        value={formData.lastName}
+        onChange={handleChange}
+        required
+      />
+    </Col>
+  </Form.Group>
 
-<br/>
-<br/>
+  {/* Gender */}
+  <Form.Group as={Row} className="mb-3 align-items-center">
+    <Form.Label column sm={2} className="text-end">Gender</Form.Label>
+    <Col sm={6}>
+      <Form.Select
+        aria-label="gender"
+        name="gender"
+        id="gender"
+        value={formData.gender}
+        onChange={handleChange}
+        required
+      >
+        <option value="">Choose your Gender</option>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+      </Form.Select>
+    </Col>
+  </Form.Group>
 
+  {/* Hidden Role */}
+  <Form.Control
+    type="hidden"
+    name="role"
+    id="role"
+    value="volunteer"
+    onChange={handleChange}
+    required
+  />
 
+   <Form.Group as={Row} className="mb-3 align-items-center" controlId="experience">
+        <Form.Label column sm={2} className="text-end">Experience</Form.Label>
+        <Form.Control as="textarea" rows={3} name='experience' id='experience'  value={formData.experience} onChange={handleChange} required/>
+   </Form.Group>
 
-<label htmlFor="lastName">Last Name: </label>
-        <input
-         type="text"
-         name='lastName'
-         id='lastName'
-         required
-         value={formData.lastName}
-         onChange={handleChange}
-          />
-<br/>
+   <Form.Group className="mb-3" controlId="ContactNo">
+        {/* <Form.Label>Contact Number</Form.Label> */}
+        <InputGroup className="mb-3">
+        <InputGroup.Text id="inputGroup-sizing-default">
+          00973
+        </InputGroup.Text>
+        <Form.Control
+          aria-label="Default"
+          aria-describedby="inputGroup-sizing-default"
+          type="number"
+          name='ContactNo'
+          id='ContactNo'
+          required
+          value={formData.ContactNo}
+          onChange={handleChange}
+        />
+    </InputGroup>
 
-          {/* <label htmlFor="role">Role:</label> */}
-        <input
-         type="text"
-         name='role'
-         id='role'
-         value="admin"
-         hidden
-         required
-         onChange={handleChange}
-          />
+   </Form.Group>
 
-          <br/>
+  {/* Submit Button */}
+  <Form.Group as={Row} className="mb-3">
+    <Col sm={{ span: 6, offset: 2 }}>
+      <Button variant="dark" type="submit">Singup</Button>
+    </Col>
+  </Form.Group>
 
-
-      <label htmlFor="gender">Gender: </label>
-        <select
-         required
-         type="text"
-         name='gender'
-         id='gender'
-         value={formData.gender}
-         onChange={handleChange}
-          >
-          <option value='' disabled>Choose your Gender</option>
-          <option value='female'>Female</option>
-          <option value='male'>Male</option>
-          </select>
-
-
-       
-<br/>
-<br/>
-
-
-<label htmlFor="ContactNo">Contact No: </label>
-        <input
-         type="number"
-         name='ContactNo'
-         id='ContactNo'
-         required
-         value={formData.ContactNo}
-         onChange={handleChange}
-          />
-
-<br/>
-<br/>
-
-<label htmlFor="experience">Experience: </label>
-        <textarea
-         name='experience'
-         id='experience'
-         required
-         value={formData.experience}
-         onChange={handleChange}
-          />
-
-
-<br/>
-<br/>
-          <button>Submit</button>
-      </form>
+</Form>
+    
     </div>
   )
 }
