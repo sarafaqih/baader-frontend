@@ -82,7 +82,7 @@ const handleUpdateTeach = async (teachId, teachFormData) => {
 const handleAddClass = async (teachId, classFormData) => {
   const newClass = await teachService.createClass(teachId, classFormData);
   setClasses([newClass, ...classes]);
-  navigate(`/teachs`);
+  navigate(`/`);
 }
 
 const handleUpdateClass = async (classId, ClassFormData) => {
